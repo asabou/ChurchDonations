@@ -14,7 +14,7 @@ public class DonationTransformer {
         target.setId(input.getId());
         target.setReceipt(input.getReceipt().toString());
         target.setReceiptNew(input.getReceipt().toString());
-        target.setSume(input.getSume().toString());
+        target.setSume(String.format("%.0f", input.getSume()));
         target.setDonationTopics(input.getDonationTopics());
         target.setDetails(input.getDetails());
         target.setCreationDate(input.getCreationDate());

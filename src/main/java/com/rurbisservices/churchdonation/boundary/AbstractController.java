@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -273,6 +274,13 @@ public abstract class AbstractController {
         tableColumnList.forEach(col -> {
             if (!col.getId().startsWith("col")) {
                 col.setCellValueFactory(new PropertyValueFactory<>(col.getId()));
+            }
+            if (col.getId().equals("sume") || col.getId().equals("receipt")) {
+                col.setComparator((Comparator<String>) (o1, o2) -> {
+                    double a = Double.parseDouble(o1);
+                    double b = Double.parseDouble(o2);
+                    return Double.compare(a, b);
+                });
             }
         });
         donationTable.setItems(donationDTOObservableList);

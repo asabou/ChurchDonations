@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,7 +123,8 @@ public class ReportsController extends AbstractController {
         String filterDonation = filterDonationTextField.getText().toLowerCase();
         String filterHouse = filterHouseTextField.getText().toLowerCase();
         String filterPerson = filterPersonTextField.getText().toLowerCase();
-        String filterDonationTopic = filterDonationTopicTextField.getText().toLowerCase();
+        String filterDonationTopic = isObjectNull(selectedDonationTopicDTO)? filterDonationTopicTextField.getText().toLowerCase() :
+                selectedDonationTopicDTO.getTopic().toLowerCase();
         Timestamp dateFrom = DateUtils.getFromTimestampFromLocalDate(fromDatePicker.getValue());
         Timestamp dateTo = DateUtils.getToTimestampFromLocalDate(toDatePicker.getValue());
         List<DonationDTO> filteredDonations;
@@ -130,23 +132,19 @@ public class ReportsController extends AbstractController {
             if (isObjectNull(selectedPersonDTO)) {
                 filteredDonations =
                         filterDonationsByDateFromAndDateToAndFilterHouseAndFilterPersonAndFilterDonationTopicAndFilterDonations(dateFrom,
-                                dateTo, filterHouse, filterPerson, isObjectNull(selectedDonationTopicDTO) ? filterDonationTopic :
-                                        selectedDonationTopicDTO.getTopic(),
+                                dateTo, filterHouse, filterPerson, filterDonationTopic,
                                 filterDonation);
             } else {
                 filteredDonations = filterDonationsByDateFromAndDateToAndFilterHouseAndPersonAndFilterDonationTopicAndFilterDonations(dateFrom,
-                        dateTo, filterHouse, selectedPersonDTO.displayFormat(), isObjectNull(selectedDonationTopicDTO) ? filterDonationTopic :
-                                selectedDonationTopicDTO.getTopic(), filterDonation);
+                        dateTo, filterHouse, selectedPersonDTO.displayFormat(), filterDonationTopic, filterDonation);
             }
         } else {
             if (isObjectNull(selectedPersonDTO)) {
                 filteredDonations = filterDonationsByDateFromAndDateToAndHouseAndFilterPersonAndFilterDonationTopicAndFilterDonations(dateFrom,
-                        dateTo, selectedHouseDTO.displayFormat(), filterPerson, isObjectNull(selectedDonationTopicDTO) ? filterDonationTopic :
-                                selectedDonationTopicDTO.getTopic(), filterDonation);
+                        dateTo, selectedHouseDTO.displayFormat(), filterPerson, filterDonationTopic, filterDonation);
             } else {
                 filteredDonations = filterDonationsByDateFromAndDateToAndHouseAndPersonAndFilterDonationTopicAndFilterDonations(dateFrom, dateTo,
-                        selectedHouseDTO.displayFormat(), selectedPersonDTO.displayFormat(), isObjectNull(selectedDonationTopicDTO) ?
-                                filterDonationTopic : selectedDonationTopicDTO.getTopic(), filterDonation);
+                        selectedHouseDTO.displayFormat(), selectedPersonDTO.displayFormat(), filterDonationTopic, filterDonation);
             }
         }
         setDonationDTOObservableList(filteredDonations);
@@ -273,6 +271,13 @@ public class ReportsController extends AbstractController {
             if (!col.getId().startsWith("col")) {
                 col.setCellValueFactory(new PropertyValueFactory<>(col.getId()));
             }
+            if (col.getId().equals("sume") || col.getId().equals("donations") || col.getId().equals("average")) {
+                col.setComparator((Comparator<String>) (o1, o2) -> {
+                    double a = Double.parseDouble(o1);
+                    double b = Double.parseDouble(o2);
+                    return Double.compare(a, b);
+                });
+            }
         });
         List<TotalsDTO> totals = getTotalsToDisplay();
         totalsTableView.setItems(FXCollections.observableArrayList(totals));
@@ -320,14 +325,14 @@ public class ReportsController extends AbstractController {
     private List<TotalsDTO> getTotalsToDisplay() {
         List<TotalsDTO> totals = new ArrayList<>();
         Double totalSum = getTotalSum();
-        totals.add(new TotalsDTO(EMPTY_STRING, totalSum.toString(), donationDTOObservableList.size() + EMPTY_STRING,
+        totals.add(new TotalsDTO(EMPTY_STRING, String.format("%.0f", totalSum), donationDTOObservableList.size() + EMPTY_STRING,
                 donationDTOObservableList.size() > 0 ? String.format("%.2f", totalSum / donationDTOObservableList.size()) : "0"));
         List<String> houses = getHousesFromDonations();
         for (String house : houses) {
             Double sume = getSumeForHouse(house);
             Integer donations = getDonationsForHouse(house);
-            TotalsDTO totalsDTO = new TotalsDTO(house, sume + EMPTY_STRING, donations + EMPTY_STRING, donations > 0 ? String.format("%.2f",
-                    sume / donations) : "0");
+            TotalsDTO totalsDTO = new TotalsDTO(house, String.format("%.0f", sume), donations + EMPTY_STRING, donations > 0 ?
+                    String.format("%.2f", sume / donations) : "0");
             totals.add(totalsDTO);
         }
         return totals;
