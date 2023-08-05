@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="1145.0" prefWidth="4162.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rurbisservices.churchdonation.boundary.admin.DonationsController">
+    <children>
+        <Label layoutX="-6.0" layoutY="-2.0" prefHeight="65.0" prefWidth="3572.0" styleClass="page-header" text="     Donații la biserica:">
+            <font>
+                <Font size="29.0" />
+            </font>
+        </Label>
+        <Line endX="4298.5" endY="1.52587890625E-5" layoutX="-152.0" layoutY="62.0" startX="-183.0" />
+        <AnchorPane layoutY="76.0" prefHeight="182.0" prefWidth="637.0">
+            <children>
+                <Label layoutX="51.0" layoutY="51.0" prefHeight="21.0" prefWidth="49.0" text="Adresa:" />
+                <ComboBox fx:id="housesComboBox" layoutX="115.0" layoutY="46.0" prefHeight="31.0" prefWidth="194.0" promptText="Selectează adresa" styleClass="button-color" />
+                <Label layoutX="48.0" layoutY="91.0" prefHeight="21.0" prefWidth="55.0" text="Enoriaș:" />
+                <ComboBox fx:id="peopleComboBox" layoutX="115.0" layoutY="86.0" prefHeight="31.0" prefWidth="194.0" promptText="Selectează enoriaș" styleClass="button-color" />
+                <TextField fx:id="filterHouseTextField" layoutX="326.0" layoutY="46.0" onKeyReleased="#filterHouse" prefHeight="31.0" prefWidth="252.0" promptText="Caută casa/adresa tastând" />
+                <TextField fx:id="filterPersonTextField" layoutX="326.0" layoutY="86.0" onKeyReleased="#filterPerson" prefHeight="31.0" prefWidth="252.0" promptText="Caută enoriașul tastând" />
+                <TextField fx:id="filterDonationTextField" layoutX="115.0" layoutY="127.0" onKeyReleased="#filterDonations" prefHeight="31.0" prefWidth="194.0" promptText="Caută chitanță/donație" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="1309.0" layoutY="260.0" prefHeight="588.0" prefWidth="502.0">
+            <children>
+                <Label layoutX="65.0" layoutY="1.0" text="Formular de creare și modificare donație">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="14.0" layoutY="42.0" text="Chitanță:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="32.0" layoutY="79.0" text="Suma:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="30.0" layoutY="276.0" text="Detalii:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="32.0" layoutY="115.0" prefHeight="27.0" prefWidth="49.0" text="Topic:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="receiptNewTextField" layoutX="97.0" layoutY="40.0" onKeyReleased="#onEnter" prefHeight="31.0" prefWidth="235.0" promptText="Număr chitanță" />
+                <TextField fx:id="sumeTextField" layoutX="97.0" layoutY="76.0" onKeyReleased="#onEnter" prefHeight="31.0" prefWidth="235.0" promptText="Suma donată" />
+                <TextArea fx:id="detailsTextArea" layoutX="98.0" layoutY="276.0" onKeyReleased="#onEnter" prefHeight="113.0" prefWidth="235.0" promptText="Alte specificații" />
+                <Button id="saveDonationButton" fx:id="saveButton" layoutX="226.0" layoutY="532.0" mnemonicParsing="false" onAction="#save" styleClass="button-color-green" text="Salvează" />
+                <Button id="cancelButton" fx:id="cancelButton" layoutX="129.0" layoutY="532.0" mnemonicParsing="false" onAction="#cancel" styleClass="button-color-red" text="Cancel" />
+                <ComboBox fx:id="donationTopicsComboBox" layoutX="97.0" layoutY="113.0" prefHeight="31.0" prefWidth="235.0" promptText="Selectează topic (opțional)" styleClass="button-color" />
+                <TextField fx:id="filterDonationTopicTextField" layoutX="340.0" layoutY="113.0" onKeyReleased="#filterDonationTopics" prefHeight="31.0" prefWidth="142.0" promptText="Filtru topic" />
+                <TextArea fx:id="donationTopicsTextArea" layoutX="97.0" layoutY="151.0" onKeyReleased="#onEnter" prefHeight="113.0" prefWidth="235.0" promptText="Topice donații" />
+                <Label layoutX="25.0" layoutY="151.0" prefHeight="27.0" prefWidth="64.0" text="Topice:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+            <TextField fx:id="houseTextField" layoutX="98.0" layoutY="438.0" prefHeight="31.0" prefWidth="235.0" />
+            <TextField fx:id="personTextField" layoutX="98.0" layoutY="477.0" prefHeight="31.0" prefWidth="235.0" />
+            <Label layoutX="31.0" layoutY="443.0" prefHeight="21.0" prefWidth="55.0" text="Adresa:" />
+            <Label layoutX="26.0" layoutY="482.0" text="Persoana:" />
+            <DatePicker fx:id="updateDateDatePicker" layoutX="99.0" layoutY="399.0" prefHeight="31.0" prefWidth="235.0" />
+            <Label layoutX="41.0" layoutY="404.0" text="Data:" />
+            </children>
+        </AnchorPane>
+        <TableView fx:id="donationTable" layoutX="50.0" layoutY="260.0" prefHeight="673.0" prefWidth="1241.0">
+            <columns>
+                <TableColumn id="house" prefWidth="114.99996948242188" text="Adresa" />
+                <TableColumn id="person" prefWidth="146.00009155273438" text="Persoană" />
+                <TableColumn id="sume" prefWidth="147.99993896484375" text="Suma" />
+                <TableColumn id="receipt" prefWidth="109.99993896484375" text="Chitanță" />
+                <TableColumn id="date" prefWidth="154.00006103515625" text="Data" />
+                <TableColumn id="donationTopics" prefWidth="156.99993896484375" text="Topice donație" />
+                <TableColumn id="details" prefWidth="182.0" text="Detalii" />
+            </columns>
+        </TableView>
+        <ComboBox fx:id="churchesComboBox" layoutX="295.0" layoutY="13.0" prefHeight="31.0" prefWidth="194.0" promptText="Selectează biserica" styleClass="button-color" />
+        <Button layoutX="1209.0" layoutY="209.0" mnemonicParsing="false" onMouseClicked="#export" prefHeight="11.0" prefWidth="82.0" styleClass="button-color" text="Export" />
+    </children>
+</AnchorPane>

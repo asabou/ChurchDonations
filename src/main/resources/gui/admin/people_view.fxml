@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="1208.0" prefWidth="3509.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rurbisservices.churchdonation.boundary.admin.PeopleController">
+    <children>
+        <TableView fx:id="personTable" layoutX="19.0" layoutY="190.0" prefHeight="737.0" prefWidth="837.0">
+            <columns>
+                <TableColumn id="house" minWidth="0.0" prefWidth="165.0" text="Adresă" />
+                <TableColumn id="firstName" prefWidth="117.99996948242188" text="Nume" />
+                <TableColumn id="lastName" prefWidth="126.0" text="Prenume" />
+                <TableColumn id="details" prefWidth="153.0" text="Detalii" />
+            </columns>
+        </TableView>
+        <AnchorPane layoutX="42.0" layoutY="68.0" prefHeight="122.0" prefWidth="605.0">
+            <children>
+                <Label layoutX="119.0" layoutY="24.0" prefHeight="27.0" prefWidth="50.0" text="Casa:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <ComboBox fx:id="housesComboBox" layoutX="177.0" layoutY="22.0" onAction="#filterHouse" prefHeight="31.0" prefWidth="186.0" promptText="Selectează numărul" styleClass="button-color" />
+                <TextField fx:id="filterPersonTextField" layoutX="177.0" layoutY="64.0" onKeyReleased="#filterPeople" prefHeight="31.0" prefWidth="186.0" promptText="Caută persoane tastând" />
+                <TextField fx:id="filterHouseTextField" layoutX="375.0" layoutY="22.0" onKeyReleased="#filterHouse" prefHeight="31.0" prefWidth="196.0" promptText="Caută casa tastând" />
+                <Label layoutX="119.0" layoutY="66.0" prefHeight="27.0" prefWidth="50.0" text="Filtru:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="913.0" layoutY="68.0" prefHeight="266.0" prefWidth="579.0">
+            <children>
+                <TextField fx:id="firstName" layoutX="93.0" layoutY="58.0" onKeyPressed="#onEnter" prefHeight="31.0" prefWidth="276.0" />
+                <TextField fx:id="lastName" layoutX="93.0" layoutY="103.0" onKeyPressed="#onEnter" prefHeight="31.0" prefWidth="276.0" />
+                <TextArea fx:id="detailsTextArea" layoutX="93.0" layoutY="147.0" onKeyPressed="#onEnter" prefHeight="106.0" prefWidth="276.0" />
+                <Button layoutX="403.0" layoutY="220.0" mnemonicParsing="false" onAction="#cancel" styleClass="button-color-red" text="Cancel" />
+                <Button fx:id="saveButton" layoutX="502.0" layoutY="220.0" mnemonicParsing="false" onAction="#save" styleClass="button-color-green" text="Salvează" />
+                <Text layoutX="7.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Formular pentru adăugare sau editare persoană" wrappingWidth="395.67724609375">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Text>
+                <Label layoutX="27.0" layoutY="60.0" prefHeight="27.0" prefWidth="62.0" text="Nume:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="7.0" layoutY="105.0" prefHeight="27.0" prefWidth="77.0" text="Prenume:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="27.0" layoutY="147.0" prefHeight="27.0" prefWidth="62.0" text="Detalii:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+        <Label layoutX="-12.0" layoutY="-4.0" prefHeight="62.0" prefWidth="3495.0" styleClass="page-header" text="          Enoriași ai bisericii:">
+            <font>
+                <Font size="29.0" />
+            </font>
+        </Label>
+        <Line endX="3343.29296875" endY="-1.52587890625E-5" layoutX="165.0" layoutY="59.0" startX="-183.0" />
+        <ComboBox fx:id="churchesComboBox" layoutX="319.0" layoutY="12.0" prefHeight="31.0" prefWidth="177.0" promptText="Selectează biserica" styleClass="button-color" />
+        <AnchorPane layoutX="856.0" layoutY="372.0" prefHeight="555.0" prefWidth="884.0">
+            <children>
+                <TableView fx:id="donationTable" layoutX="14.0" layoutY="53.0" prefHeight="502.0" prefWidth="905.0">
+                    <columns>
+                        <TableColumn id="house" prefWidth="102.00006103515625" text="Adresa" />
+                        <TableColumn id="person" prefWidth="129.0" text="Nume" />
+                        <TableColumn id="receipt" prefWidth="129.0" text="Chitanță" />
+                        <TableColumn id="sume" prefWidth="66.0" text="Suma" />
+                        <TableColumn id="donationTopics" prefWidth="143.0" text="Topice donație" />
+                        <TableColumn id="details" prefWidth="125.0" text="Detalii" />
+                        <TableColumn id="date" prefWidth="203.0" text="Data" />
+                    </columns>
+                </TableView>
+                <Label layoutX="208.0" layoutY="14.0" text="Toate donațiile făcute de la adresa enoriașului selectat">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+        <Button layoutX="774.0" layoutY="142.0" mnemonicParsing="false" onMouseClicked="#export" prefHeight="11.0" prefWidth="82.0" styleClass="button-color" text="Export" />
+    </children>
+</AnchorPane>

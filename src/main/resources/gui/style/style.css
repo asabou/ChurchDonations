@@ -1,0 +1,67 @@
+.background {
+    -fx-background-color: linear-gradient(to bottom, #99c9ff, #ffffff);
+}
+
+.table-view .column-header,
+.table-view .column-header .filler,
+.table-view .column-header-background .filler {
+    -fx-background-color: linear-gradient(to bottom, #d699ff, rgba(0, 174, 255, 0.62));
+}
+
+.page-header {
+    -fx-background-color: #66adff;
+}
+
+.button-color {
+    -fx-background-color: #d699ff;
+}
+
+.button-color:hover {
+    -fx-background-color: rgba(214, 153, 255, 0.4);
+}
+
+.button-color-red {
+    -fx-background-color: rgba(255, 52, 52, 0.62);
+}
+
+.button-color-green {
+    -fx-background-color: rgba(0, 173, 4, 0.44);
+}
+
+.button-color-orange {
+    -fx-background-color: rgba(222, 87, 12, 0.44);
+}
+
+.button-color-blue {
+    -fx-background-color: rgba(111, 139, 232, 0.44);
+}
+
+.button-color-red:hover {
+    -fx-background-color: rgb(255, 52, 52);
+}
+
+.button-color-green:hover {
+    -fx-background-color: rgb(0, 173, 4);
+}
+
+.button-color-orange:hover {
+    -fx-background-color: rgba(246, 45, 0, 0.44);
+}
+
+.button-color-blue:hover {
+    -fx-background-color: rgba(5, 54, 245, 0.44);
+}
+
+.text-field {
+    -fx-background-color: rgb(214, 153, 255);
+    -fx-prompt-text-fill: #7a7a7a;
+}
+
+.text-area .content {
+    -fx-background-color: rgb(214, 153, 255);
+    -fx-prompt-text-fill: #7a7a7a;
+}
+
+.table-column {
+    -fx-alignment: CENTER;
+}

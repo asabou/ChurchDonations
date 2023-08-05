@@ -1,0 +1,66 @@
+spring:
+  main:
+    web-application-type: none
+  datasource:
+    url: jdbc:h2:file:${donations.paths.h2-url};MODE=MySQL;DB_CLOSE_DELAY=-1;IGNORECASE=TRUE;DATABASE_TO_UPPER=TRUE;
+    driver-class-name: org.h2.Driver
+    username: church
+    password: church
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      generate-ddl: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+
+donations:
+  app-title: Management de donații
+  paths:
+    root: D:\RURBIS\ParohiaCizer
+    h2-url: ${donations.paths.root}\baza-de-date
+    fxml:
+      main: /gui/main_view.fxml
+      admin:
+        churches: /gui/admin/churches_view.fxml
+        donations: /gui/admin/donations_view.fxml
+        houses: /gui/admin/houses_view.fxml
+        people: /gui/admin/people_view.fxml
+        donation-topics: /gui/admin/donation_topics_view.fxml
+      reports: /gui/reports/reports_view.fxml
+      help:
+        about: /gui/help/about_view.fxml
+        manual: /gui/help/manual_view.fxml
+      style: /gui/style/style.css
+    initial-db:
+      file: ${donations.paths.root}\ParohiaCizer_EvidentaTaxa.csv
+      duplicated: ${donations.paths.root}\duplicated-records.csv
+    export:
+      churches:
+        csv-file: ${donations.paths.root}\biserici_csv_{date}.csv
+        xls-file: ${donations.paths.root}\biserici_xls_{date}.xls
+      houses:
+        csv-file: ${donations.paths.root}\case_csv_{date}.csv
+        xls-file: ${donations.paths.root}\case_xls_{date}.xls
+      people:
+        csv-file: ${donations.paths.root}\enoriasi_csv_{date}.csv
+        xls-file: ${donations.paths.root}\enoriasi_xls_{date}.xls
+      donation-topics:
+        csv-file: ${donations.paths.root}\topice_donatii_csv_{date}.csv
+        xls-file: ${donations.paths.root}\topice_donatii_xls_{date}.xls
+      donations:
+        csv-file: ${donations.paths.root}\donatii_csv_{date}.csv
+        xls-file: ${donations.paths.root}\donatii_xls_{date}.xls
+      reports:
+        csv-file: ${donations.paths.root}\reports_csv_{date}.csv
+        xls-file: ${donations.paths.root}\rapoarte_xls_{date}.xls
+        totals:
+          csv-file: ${donations.paths.root}\totals_csv_{date}.csv
+          xls-file: ${donations.paths.root}\totals_xls_{date}.xls
+
+
+
+

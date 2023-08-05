@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="1015.0" prefWidth="2119.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rurbisservices.churchdonation.boundary.help.AboutController">
+   <children>
+      <Text layoutX="37.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Această aplicație de management al entităților dintr-o biserică a fost deszvoltată de către RURBIS SERVICES SRL" wrappingWidth="1252.15966796875">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="37.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Este o aplicație de uz intern și poate fi distribuită în publicul țintă fără orice alt beneficiu propriu. Cu alte cuvinte, oricine o poate porni, este liber să o folosească. " textAlignment="JUSTIFY" wrappingWidth="1298.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="37.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Baza de date este persistată local, nefiind distribuită între utilizatori de pe laptopuri/calculatoare/mașini de calcul diferite." wrappingWidth="1143.6708984375">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+       <AnchorPane>
+           <children>
+
+           </children>
+       </AnchorPane>
+
+      <Text layoutX="37.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Oferă următoarele funcționalități:" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="63.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="- creare și modificare biserică">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="63.0" layoutY="201.0" strokeType="OUTSIDE" strokeWidth="0.0" text="- creare, modificare și ștergere adresă enoriaș">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="64.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="- creare, modificare și ștergere enoriaș">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="63.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" text="- creare, modificare și ștergere donație">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="63.0" layoutY="273.0" strokeType="OUTSIDE" strokeWidth="0.0" text="- vizualizare și filtrare biserici, adrese, enoriași, donații">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="63.0" layoutY="297.0" strokeType="OUTSIDE" strokeWidth="0.0" text="- generare rapoarte donații">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text fill="#ee0000" layoutX="14.0" layoutY="332.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dacă se observă unele probleme, defecte de funcționare sau dacă se doresc noi funcționalități, contactează dezvoltatorul aplicației. " wrappingWidth="1744.67087200284">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fill="#ee0000" layoutX="14.0" layoutY="374.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Important:" wrappingWidth="1744.67087200284">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cum se adaugă o donație?" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="450.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Trebuie ca mai întâi biserica să existe in baza de date. Dacă nu există, aceasta se poate adăga navigând pe meniul Administrare și apoi Biserici" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="478.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Adresa enoriașului care a făcut donația să existe în baza de date. Dacă aceasta nu există, se poate adăuga, navigand pe meniul Adminsistrare și apoi pe Adrese/Case" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="527.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. Enoriașul trebuie să existe în baza de date și să fie asignat la adresa respectivă. Dacă enoriașul nu există, acesta se poate adăuga navigând pe meniul Administrare și apoi Enoriași" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="584.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cum se editează o inregistare dintr-un tabel?" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="608.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Se dă click pe butonul &quot;Editează&quot; corespunzător liniei, iar înregistrarea se încarcă în formul alăturat" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="632.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Se modifică ce se dorește și apoi se poate da &quot;ENTER&quot; sau butonul &quot;Salvează&quot;" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="658.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. Dacă modificarea este validă, se va vedea în tabel, altfel va apărea un mesaj de atenționare în unele cazuri pentru diferitele formuri, sau nu se întâmplă nimic" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="716.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cum se șterge o înregistrare dintr-un tabel?" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="740.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Se dă click pe butonul &quot;Șterge&quot; corespunzător liniei, iar înregistrarea va dispărea din tabel." wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="764.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Notă: Dacă se șterge o adresă/casă, atunci și enoriașii vor fi șterși, dar donațiile acestora vor rămâne în baza de date" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="796.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cum se adaugă o nouă înregistrare?" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="827.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Se selectează și inserează în form datele ce se doresc a fi salvate și se poate da &quot;ENTER&quot; sau butonul &quot;Salvează&quot;" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="57.0" layoutY="853.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Dacă datele sunt valide, noua înregistrare se va vedea în tabel, iar dacă nu va apărea un mesaj de atenționare în unele cazuri pentru diferitele formuri, sau nu se întâmplă nimic" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text layoutX="114.0" layoutY="373.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filtrările și căutările se fac în mod automat, live cu fiecare element selectat, sau fiecare tastă apăsată" wrappingWidth="1143.67087200284">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>
