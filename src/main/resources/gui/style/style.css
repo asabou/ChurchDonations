@@ -65,7 +65,3 @@
 .table-column {
     -fx-alignment: CENTER;
 }
-
-.text-input > .scroll-pane:disabled {
-    -fx-opacity: 2;
-}
