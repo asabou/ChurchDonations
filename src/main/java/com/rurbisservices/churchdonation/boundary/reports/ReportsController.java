@@ -123,7 +123,7 @@ public class ReportsController extends AbstractController {
         String filterDonation = filterDonationTextField.getText().toLowerCase();
         String filterHouse = filterHouseTextField.getText().toLowerCase();
         String filterPerson = filterPersonTextField.getText().toLowerCase();
-        String filterDonationTopic = isObjectNull(selectedDonationTopicDTO)? filterDonationTopicTextField.getText().toLowerCase() :
+        String filterDonationTopic = isObjectNull(selectedDonationTopicDTO) ? filterDonationTopicTextField.getText().toLowerCase() :
                 selectedDonationTopicDTO.getTopic().toLowerCase();
         Timestamp dateFrom = DateUtils.getFromTimestampFromLocalDate(fromDatePicker.getValue());
         Timestamp dateTo = DateUtils.getToTimestampFromLocalDate(toDatePicker.getValue());
@@ -147,7 +147,7 @@ public class ReportsController extends AbstractController {
                         selectedHouseDTO.displayFormat(), selectedPersonDTO.displayFormat(), filterDonationTopic, filterDonation);
             }
         }
-        setDonationDTOObservableList(filteredDonations);
+        setDonationDTOObservableList(prepareRealSumeIfDonationTopicWasSelected(filteredDonations));
         initDonationsTableView();
         initTotalsTableView();
     }
@@ -791,14 +791,35 @@ public class ReportsController extends AbstractController {
         return filteredDonations;
     }
 
-
-    /*
-     *
-     * */
     private void setFromDatePicker() {
         int year = Year.now().getValue();
         Timestamp januaryCurrentYear = Timestamp.valueOf(year + "-01-01 00:00:00");
         fromDatePicker.setValue(DateUtils.convertTimestampToLocalDate(januaryCurrentYear));
+    }
+
+    private List<DonationDTO> prepareRealSumeIfDonationTopicWasSelected(List<DonationDTO> donationDTOS) {
+        if (!isObjectNull(selectedDonationTopicDTO)) {
+            log.info("Trying to prepare real sume when donation topic was selected ...");
+            List<DonationDTO> donationDTOList = new ArrayList<>();
+            String topic = selectedDonationTopicDTO.getTopic();
+            donationDTOS.forEach(d -> {
+                DonationDTO copy = d.copy();
+                Double sume = Double.parseDouble(d.getSume());
+                String donationTopics = d.getDonationTopics();
+                if (donationTopics.contains(topic)) {
+                    int totalValidTopics = donationTopicDTOS
+                            .stream()
+                            .filter(donationTopicDTO -> !isObjectNull(donationTopicDTO) && donationTopics.contains(donationTopicDTO.getTopic()))
+                            .collect(Collectors.toList()).size();
+                    if (totalValidTopics > 0) {
+                        copy.setSume(String.format("%.0f", Math.floor(sume / totalValidTopics)));
+                    }
+                }
+                donationDTOList.add(copy);
+            });
+            return donationDTOList;
+        }
+        return donationDTOS;
     }
 
 }

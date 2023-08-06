@@ -11,6 +11,7 @@ import com.rurbisservices.churchdonation.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -25,11 +26,11 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
     @Override
     public DonationDTO create(DonationDTO donationDTO) {
         donationDTO.setCreationDate(getCurrentTimestamp());
-        donationDTO.setUpdateDate(donationDTO.getUpdateDate());
+        donationDTO.setUpdateDate(donationDTO.getUpdateDateNew());
         log.info("Trying to create new Donation {}", donationDTO);
         donationValidation.validate(donationDTO);
         List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndReceiptAndUpdateDateYear(donationDTO.getChurchId(),
-                Long.parseLong(donationDTO.getReceiptNew()), donationDTO.getUpdateDate());
+                Long.parseLong(donationDTO.getReceiptNew()), donationDTO.getUpdateDateNew());
         if (!isListNullOrEmpty(donationEntities)) {
             throwBadRequestException(405, donationDTO.getReceipt());
         }
@@ -46,21 +47,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         donationDTO.setUpdateDate(donationDTO.getUpdateDate());
         log.info("Trying to update donation {}", donationDTO);
         donationValidation.validate(donationDTO);
-        if (!donationDTO.getReceipt().equals(donationDTO.getReceiptNew())) {
-            List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndReceiptAndUpdateDateYear(donationDTO.getChurchId(),
-                    Long.parseLong(donationDTO.getReceiptNew()), donationDTO.getUpdateDate());
-            if (!isListNullOrEmpty(donationEntities)) {
-                throwBadRequestException(405, donationDTO.getReceiptNew());
-            }
-        } else {
-            if (!DateUtils.convertTimestampToLocalDate(DateUtils.getCurrentTimestamp()).isEqual(DateUtils.convertTimestampToLocalDate(donationDTO.getUpdateDate()))) {
-                List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndReceiptAndUpdateDateYear(donationDTO.getChurchId(),
-                        Long.parseLong(donationDTO.getReceiptNew()), donationDTO.getUpdateDate());
-                if (!isListNullOrEmpty(donationEntities)) {
-                    throwBadRequestException(405, donationDTO.getReceiptNew());
-                }
-            }
-        }
+        validateDonationDTOWhenUpdate(donationDTO);
         DonationEntity donationEntityToUpdate = findDonationEntityById(donationDTO.getId());
         DonationTransformer.fillDonationEntity(donationDTO, donationEntityToUpdate);
         DonationEntity donationEntitySaved = donationRepository.save(donationEntityToUpdate);
@@ -243,6 +230,31 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
             if (personOptional.isPresent()) {
                 PersonEntity person = personOptional.get();
                 donation.setPerson(person.getFirstName() + " " + person.getLastName());
+            }
+        }
+    }
+
+    private void validateDonationDTOWhenUpdate(DonationDTO donationDTO) {
+        log.info("Trying to validate donation when update ...");
+        Long churchId = donationDTO.getChurchId();
+        Long receipt = Long.parseLong(donationDTO.getReceipt());
+        Long receiptNew = Long.parseLong(donationDTO.getReceiptNew());
+        Timestamp updateDate = donationDTO.getUpdateDate();
+        Timestamp updateDateNew = donationDTO.getUpdateDateNew();
+        if (updateDate.equals(updateDateNew)) {
+            if (!donationDTO.getReceipt().equals(donationDTO.getReceiptNew())) {
+                List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndReceiptAndUpdateDateYear(churchId, receiptNew,
+                        updateDateNew);
+                if (!isListNullOrEmpty(donationEntities)) {
+                    throwBadRequestException(405, receiptNew);
+                }
+            }
+        }
+        if (!donationDTO.getUpdateDate().equals(donationDTO.getUpdateDateNew())) {
+            List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndReceiptAndUpdateDateYear(churchId, receiptNew,
+                    updateDateNew);
+            if (!isListNullOrEmpty(donationEntities)) {
+                throwBadRequestException(405, receiptNew);
             }
         }
     }

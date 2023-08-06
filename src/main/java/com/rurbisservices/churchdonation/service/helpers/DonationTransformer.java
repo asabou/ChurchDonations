@@ -19,6 +19,7 @@ public class DonationTransformer {
         target.setDetails(input.getDetails());
         target.setCreationDate(input.getCreationDate());
         target.setUpdateDate(input.getUpdateDate());
+        target.setUpdateDateNew(input.getUpdateDate());
         target.setDate(DateUtils.convertToddMMyyyy(input.getUpdateDate()));
         target.setChurchId(input.getChurchId());
         target.setPersonId(input.getPersonId());
@@ -32,7 +33,7 @@ public class DonationTransformer {
         if (!isStringNullOrEmpty(input.getDonationTopics())) target.setDonationTopics(input.getDonationTopics());
         if (!isStringNullOrEmpty(input.getDetails())) target.setDetails(returnTrimOrNull(input.getDetails()));
         if (!isObjectNull(input.getCreationDate())) target.setCreationDate(input.getCreationDate());
-        if (!isObjectNull(input.getUpdateDate())) target.setUpdateDate(input.getUpdateDate());
+        if (!isObjectNull(input.getUpdateDateNew())) target.setUpdateDate(input.getUpdateDateNew());
         if (!isObjectNull(input.getChurchId())) target.setChurchId(input.getChurchId());
         if (!isObjectNull(input.getPersonId())) target.setPersonId(input.getPersonId());
         if (!isObjectNull(input.getHouseId())) target.setHouseId(input.getHouseId());

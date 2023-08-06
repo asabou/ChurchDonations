@@ -20,6 +20,7 @@ public class DonationDTO {
     private String details = "";
     private Timestamp creationDate;
     private Timestamp updateDate;
+    private Timestamp updateDateNew;
     private String date = "";
     private Long churchId;
     private String church = "";
@@ -29,6 +30,7 @@ public class DonationDTO {
     private String person = "";
 
     public DonationDTO(Long id, String receipt, String receiptNew, String sume, String donationTopics, String details, LocalDate updateDate,
+                       LocalDate updateDateNew,
                        Long churchId,
                        Long houseId,
                        Long personId) {
@@ -39,20 +41,30 @@ public class DonationDTO {
         this.donationTopics = donationTopics;
         this.details = details;
         this.updateDate = DateUtils.getFromTimestampFromLocalDate(updateDate);
+        this.updateDateNew = DateUtils.getFromTimestampFromLocalDate(updateDateNew);
         this.churchId = churchId;
         this.houseId = houseId;
         this.personId = personId;
     }
 
-    public DonationDTO(String receiptNew, String sume, String donationTopics, String details, LocalDate updateDate, Long churchId, Long houseId,
+    public DonationDTO(String receiptNew, String sume, String donationTopics, String details,
+                       LocalDate updateDateNew, Long churchId,
+                       Long houseId,
                        Long personId) {
         this.receiptNew = receiptNew;
         this.sume = sume;
         this.donationTopics = donationTopics;
         this.details = details;
-        this.updateDate = DateUtils.getFromTimestampFromLocalDate(updateDate);
+        this.updateDateNew = DateUtils.getFromTimestampFromLocalDate(updateDateNew);
         this.churchId = churchId;
         this.houseId = houseId;
         this.personId = personId;
     }
+
+    public DonationDTO copy() {
+        return new DonationDTO(id, receipt, receiptNew, sume, donationTopics, details, creationDate, updateDate, updateDateNew, date, churchId,
+                church, houseId,
+                house, personId, person);
+    }
+
 }
