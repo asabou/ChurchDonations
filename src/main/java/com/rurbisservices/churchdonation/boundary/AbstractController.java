@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -280,6 +282,13 @@ public abstract class AbstractController {
                     double a = Double.parseDouble(o1);
                     double b = Double.parseDouble(o2);
                     return Double.compare(a, b);
+                });
+            }
+            if (col.getId().toLowerCase().contains("date")) {
+                col.setComparator((Comparator<String>) (String o1, String o2) -> {
+                    LocalDate d1 = LocalDate.parse(o1, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+                    LocalDate d2 = LocalDate.parse(o2, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+                    return d1.compareTo(d2);
                 });
             }
         });
