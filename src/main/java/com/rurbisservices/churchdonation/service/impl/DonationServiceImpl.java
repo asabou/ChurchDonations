@@ -3,15 +3,18 @@ package com.rurbisservices.churchdonation.service.impl;
 import com.rurbisservices.churchdonation.dao.entity.DonationEntity;
 import com.rurbisservices.churchdonation.dao.entity.HouseEntity;
 import com.rurbisservices.churchdonation.dao.entity.PersonEntity;
+import com.rurbisservices.churchdonation.dao.entity.SumeDonationTopicEntity;
 import com.rurbisservices.churchdonation.service.abstracts.AbstractService;
 import com.rurbisservices.churchdonation.service.abstracts.IDonationService;
 import com.rurbisservices.churchdonation.service.helpers.DonationTransformer;
+import com.rurbisservices.churchdonation.service.helpers.SumeDonationTopicTransformer;
 import com.rurbisservices.churchdonation.service.model.DonationDTO;
+import com.rurbisservices.churchdonation.service.model.SumeDonationTopicDTO;
 import com.rurbisservices.churchdonation.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -24,6 +27,7 @@ import static com.rurbisservices.churchdonation.utils.ServiceUtils.*;
 @Service
 public class DonationServiceImpl extends AbstractService implements IDonationService {
     @Override
+    @Transactional
     public DonationDTO create(DonationDTO donationDTO) {
         donationDTO.setCreationDate(getCurrentTimestamp());
         donationDTO.setUpdateDate(donationDTO.getUpdateDateNew());
@@ -34,15 +38,24 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         if (!isListNullOrEmpty(donationEntities)) {
             throwBadRequestException(405, donationDTO.getReceipt());
         }
+        List<SumeDonationTopicEntity> sumeDonationTopicEntities =
+                SumeDonationTopicTransformer.transformSumeDonationTopicDTOS(donationDTO.getSumeDonationTopics());
         DonationEntity donationEntity = DonationTransformer.transformDonationDTO(donationDTO);
+        donationEntity.setDonationTopics(getDonationTopicsFromSumeDonationTopics(sumeDonationTopicEntities));
         DonationEntity donationEntitySaved = donationRepository.save(donationEntity);
+        List<SumeDonationTopicEntity> sumeDonationTopicEntitiesOld =
+                sumeDonationTopicRepository.findAllByDonationIdOrderByTopic(donationEntitySaved.getId());
+        sumeDonationTopicRepository.deleteAll(sumeDonationTopicEntitiesOld);
+        sumeDonationTopicEntities.forEach(x -> x.setDonation(donationEntitySaved));
+        sumeDonationTopicRepository.saveAll(sumeDonationTopicEntities);
         DonationDTO donation = DonationTransformer.transformDonationEntity(donationEntitySaved);
-        addHouseAndPersonToDonation(donation);
+        addAdditionalInformationToDonation(donation);
         log.info("Donation created");
         return donation;
     }
 
     @Override
+    @Transactional
     public DonationDTO update(DonationDTO donationDTO) {
         donationDTO.setUpdateDate(donationDTO.getUpdateDate());
         log.info("Trying to update donation {}", donationDTO);
@@ -50,9 +63,17 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         validateDonationDTOWhenUpdate(donationDTO);
         DonationEntity donationEntityToUpdate = findDonationEntityById(donationDTO.getId());
         DonationTransformer.fillDonationEntity(donationDTO, donationEntityToUpdate);
+        List<SumeDonationTopicEntity> sumeDonationTopicEntities =
+                SumeDonationTopicTransformer.transformSumeDonationTopicDTOS(donationDTO.getSumeDonationTopics());
+        donationEntityToUpdate.setDonationTopics(getDonationTopicsFromSumeDonationTopics(sumeDonationTopicEntities));
         DonationEntity donationEntitySaved = donationRepository.save(donationEntityToUpdate);
+        List<SumeDonationTopicEntity> sumeDonationTopicEntitiesOld =
+                sumeDonationTopicRepository.findAllByDonationIdOrderByTopic(donationEntitySaved.getId());
+        sumeDonationTopicRepository.deleteAll(sumeDonationTopicEntitiesOld);
+        sumeDonationTopicEntities.forEach(x -> x.setDonation(donationEntitySaved));
+        sumeDonationTopicRepository.saveAll(sumeDonationTopicEntities);
         DonationDTO donation = DonationTransformer.transformDonationEntity(donationEntitySaved);
-        addHouseAndPersonToDonation(donation);
+        addAdditionalInformationToDonation(donation);
         log.info("Donation updated");
         return donation;
     }
@@ -61,6 +82,8 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
     public void delete(Long id) {
         log.info("Trying to delete Donation by id {}", id);
         DonationEntity donationEntity = findDonationEntityById(id);
+        List<SumeDonationTopicEntity> sumeDonationTopicEntities = sumeDonationTopicRepository.findAllByDonationIdOrderByTopic(donationEntity.getId());
+        sumeDonationTopicRepository.deleteAll(sumeDonationTopicEntities);
         donationRepository.delete(donationEntity);
     }
 
@@ -80,7 +103,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdOrderByReceipt(churchId);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -91,7 +114,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndFilterOrderByReceipt(churchId, filterWildCard);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -103,7 +126,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndDateBetweenOrderBySumeAndDate(churchId, dateFromTimestamp, dateToTimestamp);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -114,7 +137,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndHouseIdAndFilterOrderByReceipt(churchId, houseId, filterWildCard);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -127,7 +150,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
                 dateFromTimestamp, dateToTimestamp);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -139,7 +162,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
                 filterWildCard);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -152,7 +175,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
                 dateFromTimestamp, dateToTimestamp);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -164,7 +187,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
                 personId, filterWildCard);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -178,7 +201,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
                 houseId, personId, dateFromTimestamp, dateToTimestamp);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -188,7 +211,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndHouseIdOrderByReceipt(churchId, houseId);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -198,7 +221,7 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         List<DonationEntity> donationEntities = donationRepository.findAllByChurchIdAndHouseIdAndPersonIdOrderByReceipt(churchId, houseId, personId);
         log.info("Donations found {}", donationEntities.size());
         List<DonationDTO> donationDTOS = DonationTransformer.transformDonationEntities(donationEntities);
-        addHouseAndPersonToListOfDonations(donationDTOS);
+        addInformationToDonations(donationDTOS);
         return donationDTOS;
     }
 
@@ -211,11 +234,11 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
         return lastReceipt + 1;
     }
 
-    private void addHouseAndPersonToListOfDonations(List<DonationDTO> donations) {
-        donations.forEach(this::addHouseAndPersonToDonation);
+    private void addInformationToDonations(List<DonationDTO> donations) {
+        donations.forEach(this::addAdditionalInformationToDonation);
     }
 
-    private void addHouseAndPersonToDonation(DonationDTO donation) {
+    private void addAdditionalInformationToDonation(DonationDTO donation) {
         Long houseId = donation.getHouseId();
         Long personId = donation.getPersonId();
         if (!isObjectNull(houseId)) {
@@ -232,6 +255,11 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
                 donation.setPerson(person.getFirstName() + " " + person.getLastName());
             }
         }
+        List<SumeDonationTopicEntity> sumeDonationTopicEntities = sumeDonationTopicRepository.findAllByDonationIdOrderByTopic(donation.getId());
+        List<SumeDonationTopicDTO> sumeDonationTopicDTOS = SumeDonationTopicTransformer.transformSumeDonationTopicEntities(sumeDonationTopicEntities);
+        donation.setSumeDonationTopics(sumeDonationTopicDTOS);
+        donation.setDonationTopics(isStringNullOrEmpty(donation.getDonationTopics()) ?
+                getDonationTopicsFromSumeDonationTopics(sumeDonationTopicEntities) : donation.getDonationTopics());
     }
 
     private void validateDonationDTOWhenUpdate(DonationDTO donationDTO) {
@@ -257,5 +285,20 @@ public class DonationServiceImpl extends AbstractService implements IDonationSer
                 throwBadRequestException(405, receiptNew);
             }
         }
+    }
+
+
+    private String getDonationTopicsFromSumeDonationTopics(List<SumeDonationTopicEntity> sumeDonationTopicEntities) {
+        String details = "";
+        for (int i = 0; i < sumeDonationTopicEntities.size(); i++) {
+            if (i == sumeDonationTopicEntities.size() - 1) {
+                details = details + sumeDonationTopicEntities.get(i).getTopic() + " - " + String.format("%.0f",
+                        sumeDonationTopicEntities.get(i).getSume());
+            } else {
+                details = details + sumeDonationTopicEntities.get(i).getTopic() + " - " +  String.format("%.0f",
+                        sumeDonationTopicEntities.get(i).getSume()) + "\n";
+            }
+        }
+        return details;
     }
 }

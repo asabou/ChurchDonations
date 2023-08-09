@@ -340,6 +340,7 @@ public class PeopleController extends AbstractController {
         Long id = personDTO.getId();
         try {
             personService.delete(id);
+            personDTOS.remove(personDTO);
             personDTOObservableList.remove(personDTO);
         } catch (NotFoundException e) {
             GUIUtils.showErrorAlert(e.getMessage());

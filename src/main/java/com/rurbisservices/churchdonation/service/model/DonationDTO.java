@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +18,7 @@ public class DonationDTO {
     private String receiptNew = "";
     private String sume = "";
     private String donationTopics = "";
+    private List<SumeDonationTopicDTO> sumeDonationTopics;
     private String details = "";
     private Timestamp creationDate;
     private Timestamp updateDate;
@@ -29,7 +31,9 @@ public class DonationDTO {
     private Long personId;
     private String person = "";
 
-    public DonationDTO(Long id, String receipt, String receiptNew, String sume, String donationTopics, String details, LocalDate updateDate,
+    public DonationDTO(Long id, String receipt, String receiptNew, String sume,
+                       List<SumeDonationTopicDTO> sumeDonationTopics, String details,
+                       LocalDate updateDate,
                        LocalDate updateDateNew,
                        Long churchId,
                        Long houseId,
@@ -38,8 +42,8 @@ public class DonationDTO {
         this.receipt = receipt;
         this.receiptNew = receiptNew;
         this.sume = sume;
-        this.donationTopics = donationTopics;
         this.details = details;
+        this.sumeDonationTopics = sumeDonationTopics;
         this.updateDate = DateUtils.getFromTimestampFromLocalDate(updateDate);
         this.updateDateNew = DateUtils.getFromTimestampFromLocalDate(updateDateNew);
         this.churchId = churchId;
@@ -47,13 +51,13 @@ public class DonationDTO {
         this.personId = personId;
     }
 
-    public DonationDTO(String receiptNew, String sume, String donationTopics, String details,
+    public DonationDTO(String receiptNew, String sume, List<SumeDonationTopicDTO> sumeDonationTopics, String details,
                        LocalDate updateDateNew, Long churchId,
                        Long houseId,
                        Long personId) {
         this.receiptNew = receiptNew;
         this.sume = sume;
-        this.donationTopics = donationTopics;
+        this.sumeDonationTopics = sumeDonationTopics;
         this.details = details;
         this.updateDateNew = DateUtils.getFromTimestampFromLocalDate(updateDateNew);
         this.churchId = churchId;
@@ -62,7 +66,9 @@ public class DonationDTO {
     }
 
     public DonationDTO copy() {
-        return new DonationDTO(id, receipt, receiptNew, sume, donationTopics, details, creationDate, updateDate, updateDateNew, date, churchId,
+        return new DonationDTO(id, receipt, receiptNew, sume, donationTopics, sumeDonationTopics, details, creationDate, updateDate,
+                updateDateNew, date,
+                churchId,
                 church, houseId,
                 house, personId, person);
     }

@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,14 +37,13 @@ public class DonationsController extends AbstractController {
 
     private LocalDate updateDate;
 
+    private List<SumeDonationTopicDTO> sumeDonationTopicDTOS = new ArrayList<>();
+
     @FXML
     private TextField receiptNewTextField;
 
     @FXML
     private TextField sumeTextField;
-
-    @FXML
-    private TextArea donationTopicsTextArea;
 
     @FXML
     private TextField houseTextField;
@@ -53,6 +53,32 @@ public class DonationsController extends AbstractController {
 
     @FXML
     private DatePicker updateDateDatePicker;
+
+    @FXML
+    private TextField topic1;
+    @FXML
+    private TextField topic2;
+    @FXML
+    private TextField topic3;
+    @FXML
+    private TextField topic4;
+    @FXML
+    private TextField topic5;
+
+    @FXML
+    private TextField sume1;
+
+    @FXML
+    private TextField sume2;
+
+    @FXML
+    private TextField sume3;
+
+    @FXML
+    private TextField sume4;
+
+    @FXML
+    private TextField sume5;
 
     @FXML
     public void initialize() {
@@ -91,7 +117,7 @@ public class DonationsController extends AbstractController {
         String filterPerson = filterPersonTextField.getText().toLowerCase();
         List<PersonDTO> filteredPersons;
         if (!isObjectNull(selectedHouseDTO)) {
-            filteredPersons = filterPersonsByHouseAndFilterPerson(selectedHouseDTO.displayFormat(), filterPerson);
+            filteredPersons = filterPersonsByHouseAndFilterPerson(selectedHouseDTO.displayFormat().toLowerCase(), filterPerson);
         } else {
             filteredPersons = personDTOS
                     .stream().filter(x -> !isObjectNull(x) && (
@@ -116,14 +142,16 @@ public class DonationsController extends AbstractController {
             if (isObjectNull(selectedPersonDTO)) {
                 filteredDonations = filterDonationsByFilterHouseAndFilterPersonAndFilterDonations(filterHouse, filterPerson, filterDonations);
             } else {
-                filteredDonations = filterDonationsByFilterHouseAndPersonAndFilterDonations(filterHouse, selectedPersonDTO.displayFormat(),
+                filteredDonations = filterDonationsByFilterHouseAndPersonAndFilterDonations(filterHouse, selectedPersonDTO.displayFormat().toLowerCase(),
                         filterDonations);
             }
         } else {
             if (isObjectNull(selectedPersonDTO)) {
-                filteredDonations = filterDonationsByHouseAndFilterPersonAndFilterDonations(selectedHouseDTO.displayFormat(), filterPerson, filterDonations);
+                filteredDonations = filterDonationsByHouseAndFilterPersonAndFilterDonations(selectedHouseDTO.displayFormat().toLowerCase(), filterPerson,
+                        filterDonations);
             } else {
-                filteredDonations = filterDonationsByHouseAndPersonAndFilterDonations(selectedHouseDTO.displayFormat(), selectedPersonDTO.displayFormat(),
+                filteredDonations = filterDonationsByHouseAndPersonAndFilterDonations(selectedHouseDTO.displayFormat().toLowerCase(),
+                        selectedPersonDTO.displayFormat().toLowerCase(),
                         filterDonations);
             }
         }
@@ -138,7 +166,6 @@ public class DonationsController extends AbstractController {
         setDonationTopicDTOObservableList(donationTopicDTOS);
         initDonationTopicComboBox();
         donationTopicsComboBox.getSelectionModel().selectFirst();
-        donationTopicsTextArea.setText(EMPTY_STRING);
         initFilterDisabled(false);
         isAdd = true;
     }
@@ -155,6 +182,7 @@ public class DonationsController extends AbstractController {
         peopleComboBox.getSelectionModel().selectFirst();
         houseTextField.setText(EMPTY_STRING);
         personTextField.setText(EMPTY_STRING);
+        resetTopics();
     }
 
     @FXML
@@ -174,20 +202,21 @@ public class DonationsController extends AbstractController {
                 try {
                     if (isAdd) {
                         DonationDTO donationDTO = new DonationDTO(receiptNewTextField.getText(), sumeTextField.getText(),
-                                donationTopicsTextArea.getText(), detailsTextArea.getText(), updateDateDatePicker.getValue(), selectedChurchDTO.getId(),
+                                getSumeDonationTopics(), detailsTextArea.getText(), updateDateDatePicker.getValue(),
+                                selectedChurchDTO.getId(),
                                 selectedHouseDTO.getId(), selectedPersonId);
                         donationDTO = donationService.create(donationDTO);
                         donationDTOS.add(donationDTO);
                         donationDTOObservableList.add(donationDTO);
-                        cancel();
                     } else {
                         DonationDTO donation = new DonationDTO(id, receipt, receiptNewTextField.getText(), sumeTextField.getText(),
-                                donationTopicsTextArea.getText(), detailsTextArea.getText(), updateDate, updateDateDatePicker.getValue(),
+                                getSumeDonationTopics(), detailsTextArea.getText(), updateDate,
+                                updateDateDatePicker.getValue(),
                                 selectedChurchDTO.getId(), selectedHouseDTO.getId(), selectedPersonId);
                         donation = donationService.update(donation);
                         updateDonationInLists(donation);
-                        cancelFromButton();
                     }
+                    cancelFromButton();
                 } catch (BadRequestException | InternalServerErrorException | NotFoundException e) {
                     showErrorAlert(e.getMessage());
                 } catch (Throwable e) {
@@ -236,23 +265,48 @@ public class DonationsController extends AbstractController {
         setPersonDTOObservableList(personDTOS);
     }
 
+    private List<SumeDonationTopicDTO> getSumeDonationTopics() {
+        List<SumeDonationTopicDTO> sumeDonationTopics = new ArrayList<>();
+        if (!isStringNullOrEmpty(topic1.getText())) sumeDonationTopics.add(new SumeDonationTopicDTO(topic1.getText(), sume1.getText()));
+        if (!isStringNullOrEmpty(topic2.getText())) sumeDonationTopics.add(new SumeDonationTopicDTO(topic2.getText(), sume2.getText()));
+        if (!isStringNullOrEmpty(topic3.getText())) sumeDonationTopics.add(new SumeDonationTopicDTO(topic3.getText(), sume3.getText()));
+        if (!isStringNullOrEmpty(topic4.getText())) sumeDonationTopics.add(new SumeDonationTopicDTO(topic4.getText(), sume4.getText()));
+        if (!isStringNullOrEmpty(topic5.getText())) sumeDonationTopics.add(new SumeDonationTopicDTO(topic5.getText(), sume5.getText()));
+        return sumeDonationTopics;
+    }
+
     private void initDonationTopicComboBox() {
         donationTopicsComboBox.setItems(donationTopicDTOObservableList);
         donationTopicsComboBox.setConverter(new DonationTopicDTOConverter());
         donationTopicsComboBox.setOnAction((e) -> {
             DonationTopicDTO selected = (DonationTopicDTO) donationTopicsComboBox.getSelectionModel().getSelectedItem();
-            if (!isObjectNull(selected)) addTopicToDonationTopics(selected);
+            if (!isObjectNull(selected)) {
+                if (!topic1.getText().toLowerCase().contains(selected.getTopic().toLowerCase()) && !topic2.getText().toLowerCase().contains(selected.getTopic().toLowerCase()) &&
+                !topic3.getText().toLowerCase().contains(selected.getTopic().toLowerCase()) && !topic4.getText().toLowerCase().contains(selected.getTopic().toLowerCase()) &&
+                !topic5.getText().toLowerCase().contains(selected.getTopic().toLowerCase())) {
+                    if (isStringNullOrEmpty(topic1.getText())) {
+                        topic1.setText(selected.getTopic());
+                    } else {
+                        if (isStringNullOrEmpty(topic2.getText())) {
+                            topic2.setText(selected.getTopic());
+                        } else {
+                            if (isStringNullOrEmpty(topic3.getText())) {
+                                topic3.setText(selected.getTopic());
+                            } else {
+                                if (isStringNullOrEmpty(topic4.getText())) {
+                                    topic4.setText(selected.getTopic());
+                                } else {
+                                    if (isStringNullOrEmpty(topic5.getText())) {
+                                        topic5.setText(selected.getTopic());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         });
         log.info("Init donationTopicComboBox finalized");
-    }
-
-
-    private void addTopicToDonationTopics(DonationTopicDTO donationTopicDTO) {
-        String topicToAdd = donationTopicDTO.getTopic();
-        String text = donationTopicsTextArea.getText();
-        if (!text.contains(topicToAdd)) {
-            donationTopicsTextArea.setText(isStringNullOrEmpty(text) ? topicToAdd : text + "\n" + topicToAdd);
-        }
     }
 
     private void initForm(DonationDTO donationDTO, Integer index) {
@@ -265,10 +319,36 @@ public class DonationsController extends AbstractController {
         this.receiptNewTextField.setText(donationDTO.getReceipt());
         this.sumeTextField.setText(donationDTO.getSume());
         this.detailsTextArea.setText(donationDTO.getDetails());
-        this.donationTopicsTextArea.setText(donationDTO.getDonationTopics());
         this.updateDateDatePicker.setValue(!isObjectNull(donationDTO.getUpdateDate()) ?
                 DateUtils.convertTimestampToLocalDate(donationDTO.getUpdateDate()) :
                 DateUtils.convertTimestampToLocalDate(DateUtils.getCurrentTimestamp()));
+        this.sumeDonationTopicDTOS = donationDTO.getSumeDonationTopics();
+        initSumeDonationTopicDTOS();
+    }
+
+    private void initSumeDonationTopicDTOS() {
+        resetTopics();
+        int size = !isListNullOrEmpty(sumeDonationTopicDTOS)? sumeDonationTopicDTOS.size() : 0;
+        if (size >= 1) {
+            topic1.setText(sumeDonationTopicDTOS.get(0).getTopic());
+            sume1.setText(sumeDonationTopicDTOS.get(0).getSume());
+        }
+        if (size >= 2) {
+            topic2.setText(sumeDonationTopicDTOS.get(1).getTopic());
+            sume2.setText(sumeDonationTopicDTOS.get(1).getSume());
+        }
+        if (size >= 3) {
+            topic3.setText(sumeDonationTopicDTOS.get(2).getTopic());
+            sume3.setText(sumeDonationTopicDTOS.get(2).getSume());
+        }
+        if (size >= 4) {
+            topic4.setText(sumeDonationTopicDTOS.get(3).getTopic());
+            sume4.setText(sumeDonationTopicDTOS.get(3).getSume());
+        }
+        if (size >= 5) {
+            topic5.setText(sumeDonationTopicDTOS.get(4).getTopic());
+            sume5.setText(sumeDonationTopicDTOS.get(4).getSume());
+        }
     }
 
     private void initChurchesComboBox() {
@@ -325,7 +405,7 @@ public class DonationsController extends AbstractController {
             if (isObjectNull(selected)) {
                 filteredPersons = personDTOS;
             } else {
-                filteredPersons = filterPersonsByHouseAndFilterPerson(selected.displayFormat(), filterPerson);
+                filteredPersons = filterPersonsByHouseAndFilterPerson(selected.displayFormat().toLowerCase(), filterPerson);
                 filteredPersons.add(0, null);
             }
             setPersonDTOObservableList(filteredPersons);
@@ -344,7 +424,6 @@ public class DonationsController extends AbstractController {
             setPersonDTO(selected);
             log.info("Person selected {}", selected);
             filterDonations();
-            cancel();
             personTextField.setText(!isObjectNull(selected) ? selected.displayFormat() : EMPTY_STRING);
         });
         log.info("Init personComboBox finalized");
@@ -447,6 +526,7 @@ public class DonationsController extends AbstractController {
         try {
             Long id = donation.getId();
             donationService.delete(id);
+            donationDTOS.remove(donation);
             donationDTOObservableList.remove(donation);
             setNextReceiptNumber();
         } catch (NotFoundException e) {
@@ -463,7 +543,6 @@ public class DonationsController extends AbstractController {
         receiptNewTextField.setDisable(mode);
         sumeTextField.setDisable(mode);
         detailsTextArea.setDisable(mode);
-        donationTopicsTextArea.setDisable(mode);
         saveButton.setDisable(mode);
         housesComboBox.setDisable(mode);
         peopleComboBox.setDisable(mode);
@@ -471,8 +550,31 @@ public class DonationsController extends AbstractController {
         filterDonationTopicTextField.setDisable(mode);
         donationTopicsComboBox.setDisable(mode);
         updateDateDatePicker.setDisable(mode);
+        topic1.setDisable(mode);
+        sume1.setDisable(mode);
+        topic2.setDisable(mode);
+        sume2.setDisable(mode);
+        topic3.setDisable(mode);
+        sume3.setDisable(mode);
+        topic4.setDisable(mode);
+        sume4.setDisable(mode);
+        topic5.setDisable(mode);
+        sume5.setDisable(mode);
         houseTextField.setDisable(true);
         personTextField.setDisable(true);
+    }
+
+    private void resetTopics() {
+        topic1.setText(EMPTY_STRING);
+        sume1.setText(EMPTY_STRING);
+        topic2.setText(EMPTY_STRING);
+        sume2.setText(EMPTY_STRING);
+        topic3.setText(EMPTY_STRING);
+        sume3.setText(EMPTY_STRING);
+        topic4.setText(EMPTY_STRING);
+        sume4.setText(EMPTY_STRING);
+        topic5.setText(EMPTY_STRING);
+        sume5.setText(EMPTY_STRING);
     }
 
     private void resetFields() {

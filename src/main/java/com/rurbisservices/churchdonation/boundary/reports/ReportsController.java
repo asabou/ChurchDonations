@@ -77,7 +77,7 @@ public class ReportsController extends AbstractController {
         String filterPerson = filterPersonTextField.getText().toLowerCase();
         List<PersonDTO> filteredPersons;
         if (!isObjectNull(selectedHouseDTO)) {
-            filteredPersons = filterPersonsByHouseAndFilterPerson(selectedHouseDTO.displayFormat(), filterPerson);
+            filteredPersons = filterPersonsByHouseAndFilterPerson(selectedHouseDTO.displayFormat().toLowerCase(), filterPerson);
         } else {
             filteredPersons = personDTOS
                     .stream().filter(x -> !isObjectNull(x) && (
@@ -136,15 +136,16 @@ public class ReportsController extends AbstractController {
                                 filterDonation);
             } else {
                 filteredDonations = filterDonationsByDateFromAndDateToAndFilterHouseAndPersonAndFilterDonationTopicAndFilterDonations(dateFrom,
-                        dateTo, filterHouse, selectedPersonDTO.displayFormat(), filterDonationTopic, filterDonation);
+                        dateTo, filterHouse, selectedPersonDTO.displayFormat().toLowerCase(), filterDonationTopic, filterDonation);
             }
         } else {
             if (isObjectNull(selectedPersonDTO)) {
                 filteredDonations = filterDonationsByDateFromAndDateToAndHouseAndFilterPersonAndFilterDonationTopicAndFilterDonations(dateFrom,
-                        dateTo, selectedHouseDTO.displayFormat(), filterPerson, filterDonationTopic, filterDonation);
+                        dateTo, selectedHouseDTO.displayFormat().toLowerCase(), filterPerson, filterDonationTopic, filterDonation);
             } else {
                 filteredDonations = filterDonationsByDateFromAndDateToAndHouseAndPersonAndFilterDonationTopicAndFilterDonations(dateFrom, dateTo,
-                        selectedHouseDTO.displayFormat(), selectedPersonDTO.displayFormat(), filterDonationTopic, filterDonation);
+                        selectedHouseDTO.displayFormat().toLowerCase(), selectedPersonDTO.displayFormat().toLowerCase(), filterDonationTopic,
+                        filterDonation);
             }
         }
         setDonationDTOObservableList(prepareRealSumeIfDonationTopicWasSelected(filteredDonations));
@@ -222,7 +223,7 @@ public class ReportsController extends AbstractController {
             if (isObjectNull(selected)) {
                 filteredPersons = personDTOS;
             } else {
-                filteredPersons = filterPersonsByHouseAndFilterPerson(selected.displayFormat(), filterPerson);
+                filteredPersons = filterPersonsByHouseAndFilterPerson(selected.displayFormat().toLowerCase(), filterPerson);
                 filteredPersons.add(0, null);
             }
             setPersonDTOObservableList(filteredPersons);
@@ -801,18 +802,12 @@ public class ReportsController extends AbstractController {
         if (!isObjectNull(selectedDonationTopicDTO)) {
             log.info("Trying to prepare real sume when donation topic was selected ...");
             List<DonationDTO> donationDTOList = new ArrayList<>();
-            String topic = selectedDonationTopicDTO.getTopic();
+            String topic = selectedDonationTopicDTO.getTopic().toLowerCase();
             donationDTOS.forEach(d -> {
                 DonationDTO copy = d.copy();
-                Double sume = Double.parseDouble(d.getSume());
-                String donationTopics = d.getDonationTopics();
-                if (donationTopics.contains(topic)) {
-                    int totalValidTopics = donationTopicDTOS
-                            .stream()
-                            .filter(donationTopicDTO -> !isObjectNull(donationTopicDTO) && donationTopics.contains(donationTopicDTO.getTopic()))
-                            .collect(Collectors.toList()).size();
-                    if (totalValidTopics > 0) {
-                        copy.setSume(String.format("%.0f", Math.floor(sume / totalValidTopics)));
+                for (SumeDonationTopicDTO sumeDonationTopic : d.getSumeDonationTopics()) {
+                    if (sumeDonationTopic.getTopic().toLowerCase().contains(topic)) {
+                        copy.setSume(sumeDonationTopic.getSume());
                     }
                 }
                 donationDTOList.add(copy);

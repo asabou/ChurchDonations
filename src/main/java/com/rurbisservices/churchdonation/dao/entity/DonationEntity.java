@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -44,4 +46,8 @@ public class DonationEntity {
 
     @Column(name = "house_id", nullable = false)
     private Long houseId;
+
+    @OneToMany(mappedBy = "donation")
+    @ToString.Exclude
+    private List<SumeDonationTopicEntity> sumeDonationTopics = new ArrayList<>();
 }

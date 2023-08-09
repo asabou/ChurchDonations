@@ -194,6 +194,7 @@ public class DonationTopicsController extends AbstractController {
         Long id = donationTopic.getId();
         try {
             donationTopicService.delete(id);
+            donationTopicDTOS.remove(donationTopic);
             donationTopicDTOObservableList.remove(donationTopic);
         } catch (NotFoundException e) {
             showErrorAlert(e.getMessage());

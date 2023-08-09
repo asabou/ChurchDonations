@@ -150,6 +150,7 @@ public class HousesController extends AbstractController {
         try {
             Long id = houseDTO.getId();
             houseService.delete(id);
+            houseDTOS.remove(houseDTO);
             houseDTOObservableList.remove(houseDTO);
         } catch (NotFoundException e) {
             showErrorAlert(e.getMessage());

@@ -30,6 +30,9 @@ public abstract class AbstractService {
     protected IDonationRepository donationRepository;
 
     @Autowired
+    protected ISumeDonationTopicRepository sumeDonationTopicRepository;
+
+    @Autowired
     protected IDonationTopicRepository donationTopicRepository;
 
     @Autowired
