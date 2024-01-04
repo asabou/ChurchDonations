@@ -114,6 +114,7 @@ public class HousesController extends AbstractController {
         churchesComboBox.setOnAction((e) -> {
             ChurchDTO selected = (ChurchDTO) churchesComboBox.getSelectionModel().getSelectedItem();
             setChurchDTO(selected);
+            initHousesLists();
             filter();
         });
     }
@@ -210,6 +211,7 @@ public class HousesController extends AbstractController {
                         btn.setOnAction((ActionEvent event) -> {
                             HouseDTO houseDTO = getTableView().getItems().get(getIndex());
                             deleteHouse(houseDTO);
+                            cancel();
                         });
                     }
 

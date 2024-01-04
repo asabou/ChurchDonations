@@ -154,6 +154,7 @@ public class ChurchesController extends AbstractController {
                             ChurchDTO churchDTO = getTableView().getItems().get(getIndex());
                             log.info("Delete button pressed for church {}", churchDTO);
                             deleteChurch(churchDTO);
+                            cancel();
                         });
                     }
 

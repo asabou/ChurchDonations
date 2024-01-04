@@ -451,6 +451,7 @@ public class DonationsController extends AbstractController {
                             DonationDTO donationDTO = getTableView().getItems().get(getIndex());
                             log.info("Clicked delete for donation {}", donationDTO);
                             deleteDonation(donationDTO);
+                            cancel();
                         });
                     }
 

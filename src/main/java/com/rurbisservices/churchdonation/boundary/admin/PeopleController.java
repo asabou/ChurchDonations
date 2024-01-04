@@ -184,6 +184,7 @@ public class PeopleController extends AbstractController {
             filterPersonTextField.setText(EMPTY_STRING);
             log.info("Church selected {}", selected);
             initHousesLists();
+            initPeopleLists();
             initHouseComboBox();
             filterPeople();
         });
@@ -276,6 +277,7 @@ public class PeopleController extends AbstractController {
                             PersonDTO personDTO = getTableView().getItems().get(getIndex());
                             log.info("Clicked delete for person {}", personDTO);
                             deletePerson(personDTO);
+                            cancel();
                         });
                     }
 

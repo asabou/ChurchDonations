@@ -169,6 +169,7 @@ public class DonationTopicsController extends AbstractController {
                             DonationTopicDTO donationTopicDTO = getTableView().getItems().get(getIndex());
                             log.info("Delete button pressed for donation topic {}", donationTopicDTO);
                             deleteDonationTopic(donationTopicDTO);
+                            cancel();
                         });
                     }
 
@@ -226,6 +227,7 @@ public class DonationTopicsController extends AbstractController {
         churchesComboBox.setOnAction((e) -> {
             ChurchDTO selected = (ChurchDTO) churchesComboBox.getSelectionModel().getSelectedItem();
             setChurchDTO(selected);
+            initDonationTopicList();
             filter();
         });
 
